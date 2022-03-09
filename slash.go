@@ -125,6 +125,20 @@ func (c *Command) CommandCreate(discord *discordgo.Session, guildID string) {
 	}
 }
 
+// Command削除
+// all guild when guildID == ""
+func CommandDelete(discord *discordgo.Session, guildID string, name string) error {
+	cmd, err := discord.ApplicationCommands(discord.State.User.ID, guildID)
+	if err != nil {
+		return err
+	}
+	for _, cmdData := range cmd {
+		if cmdData.Name == name {
+			return discord.ApplicationCommandDelete(discord.State.User.ID, guildID, cmdData.ID)
+		}
+	}
+	return fmt.Errorf("not found \"%s\"", name)
+}
 func FindData(interaction *discordgo.InteractionCreate, key string) (value []interface{}) {
 	for _, data := range interaction.ApplicationCommandData().Options {
 		if data.Name == key {

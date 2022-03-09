@@ -61,6 +61,9 @@ type InteractionStruct struct {
 	Submit    discordgo.ModalSubmitInteractionData
 }
 
+// InteractionResponseのFlag
+const Invisible uint64 = 1 << 6
+
 // InteractionCreate 整形
 func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.InteractionCreate) (iData InteractionStruct) {
 	var err error
@@ -107,6 +110,7 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 }
 
 // Interaction Return Message
+// Flags Usual: Invisible
 func (i *InteractionResponse) Return(resType ReturnType, resData *discordgo.InteractionResponseData) error {
 	i.Response = &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseType(resType),
@@ -116,6 +120,7 @@ func (i *InteractionResponse) Return(resType ReturnType, resData *discordgo.Inte
 }
 
 // Interaction Edit Message
+// Flags Usual: Invisible
 func (i *InteractionResponse) Edit(newData *discordgo.WebhookEdit) error {
 	appID := i.Discord.State.User.ID
 	_, err := i.Discord.InteractionResponseEdit(appID, i.Interaction, newData)
