@@ -63,9 +63,6 @@ func (c *Command) AddCommand(cmd, description string) *Command {
 // コマンドのオプションの追加
 // valueMin,valueMax request cmdType= int or float
 func (c *Command) AddOption(cmdType OptionType, name, description string, request bool, valueMin, valueMax float64) *Command {
-	if c.lastCall != addCommand {
-		panic("AddOption() Request before AddCommand()")
-	}
 	data := &discordgo.ApplicationCommandOption{
 		Type:        discordgo.ApplicationCommandOptionType(cmdType),
 		Name:        name,
