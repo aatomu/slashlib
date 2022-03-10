@@ -36,7 +36,7 @@ func (c *Component) AddButton(data discordgo.Button) *Component {
 // Request: CustomID, Options.
 // SelectMenuOption Request: Label,Value.
 // if MinValue or MaxValue != 0 multi select
-func (c *Component) AddMenu(data discordgo.SelectMenu) *Component {
+func (c *Component) AddSelectMenu(data discordgo.SelectMenu) *Component {
 	if len(c.Discord[c.CompArrayLast(1)].Components) != 0 {
 		panic("AddMenu() Request AddLine() before")
 	}
@@ -46,7 +46,8 @@ func (c *Component) AddMenu(data discordgo.SelectMenu) *Component {
 
 // 入力の追加
 // FuncReq: AddLine()
-// Request: CustomID,Label, Style.
+// Request: CustomID,Label,Style.
+// Styles : discordgo.TextInputShort,discordgo.TextInputParagraph,.
 // Interaction Response Only
 func (c *Component) AddInput(data discordgo.TextInput) *Component {
 	c.Discord[c.CompArrayLast(1)].Components = append(c.Discord[c.CompArrayLast(1)].Components, data)

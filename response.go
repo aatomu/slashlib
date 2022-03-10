@@ -119,6 +119,21 @@ func (i *InteractionResponse) Return(resType ReturnType, resData *discordgo.Inte
 	return i.Discord.InteractionRespond(i.Interaction, i.Response)
 }
 
+// Interaction Window Message
+// Component doesn't usual: AddButton(),AddMenu
+// Result Type is Submit, doesn't Component,SlashCommand.
+func (i *InteractionResponse) Window(title, customID string, comp *Component) error {
+	i.Response = &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseType(Window),
+		Data: &discordgo.InteractionResponseData{
+			Title:      title,
+			CustomID:   customID,
+			Components: comp.Parse(),
+		},
+	}
+	return i.Discord.InteractionRespond(i.Interaction, i.Response)
+}
+
 // Interaction Edit Message
 // Flags Usual: Invisible
 func (i *InteractionResponse) Edit(newData *discordgo.WebhookEdit) error {
