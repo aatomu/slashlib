@@ -76,8 +76,12 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 		iData.GuildName = "DirectMessage"
 	}
 	iData.ChannelID = cmdData.ChannelID
-	iData.ChannelData, _ = discord.Channel(iData.ChannelID)
-	iData.ChannelName = iData.ChannelData.Name
+	iData.ChannelData, err = discord.Channel(iData.ChannelID)
+	if err == nil {
+		iData.ChannelName = iData.ChannelData.Name
+	} else {
+		iData.ChannelName = "Unknown"
+	}
 	// DMならばUser じゃ無ければMember
 	if cmdData.User != nil {
 		iData.UserNum = cmdData.User.Discriminator
