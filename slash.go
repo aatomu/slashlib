@@ -107,7 +107,7 @@ func (c *Command) CommandLast() int {
 
 // Command[-1].Options[-1] 参照用
 func (c *Command) OptionsLast() int {
-	return len(c.Discord[c.CommandLast()].Options)
+	return len(c.Discord[c.CommandLast()].Options) - 1
 }
 
 // Command生成
