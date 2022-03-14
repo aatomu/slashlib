@@ -50,15 +50,17 @@ type InteractionStruct struct {
 	UserNum     string
 	UserName    string
 	UserData    *discordgo.User
-	// TypeResult:
-	// discordgo.InteractionApplicationCommand
-	// discordgo.InteractionMessageComponent
-	// discordgo.InteractionModalSubmit
-	Type      discordgo.InteractionType
-	Check     CommandType
-	Command   discordgo.ApplicationCommandInteractionData
-	Component discordgo.MessageComponentInteractionData
-	Submit    discordgo.ModalSubmitInteractionData
+	Type        discordgo.InteractionType
+	Check       CommandType
+	Command     discordgo.ApplicationCommandInteractionData
+	Component   discordgo.MessageComponentInteractionData
+	Submit      discordgo.ModalSubmitInteractionData
+	PostData    []PostData
+}
+
+type PostData struct {
+	CustomID string
+	Value    string
 }
 
 // InteractionResponseのFlag
@@ -107,8 +109,16 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 	case discordgo.InteractionModalSubmit:
 		iData.Check = SubmitCommand
 		iData.Submit = cmdData.ModalSubmitData()
+		//Postデータを整形
+		for _, comp := range iData.Submit.Components {
+			data := comp.(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput)
+			iData.PostData = append(iData.PostData, PostData{
+				CustomID: data.CustomID,
+				Value:    data.Value,
+			})
+		}
 		//表示
-		log.Print("Guild:\"" + iData.GuildName + "\"  Channel:\"" + iData.ChannelName + "\"  [" + iData.UserName + "#" + iData.UserNum + "] Submit ID:" + iData.Submit.CustomID)
+		log.Printf("Guild:\"%s\"  Channel:\"%s\"  [%s#%s] Submit_ID:%s %+v", iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Submit.CustomID, iData.PostData)
 	}
 	return
 }
