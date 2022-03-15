@@ -40,24 +40,36 @@ const (
 
 // 整形用構造体
 type InteractionStruct struct {
-	GuildID     string
-	GuildName   string
-	GuildData   *discordgo.Guild
-	ChannelID   string
-	ChannelName string
-	ChannelData *discordgo.Channel
-	UserID      string
-	UserNum     string
-	UserName    string
-	UserData    *discordgo.User
-	Type        discordgo.InteractionType
-	Check       CommandType
-	Command     discordgo.ApplicationCommandInteractionData
-	Component   discordgo.MessageComponentInteractionData
-	Submit      discordgo.ModalSubmitInteractionData
-	PostData    []PostData
+	GuildID        string
+	GuildName      string
+	GuildData      *discordgo.Guild
+	ChannelID      string
+	ChannelName    string
+	ChannelData    *discordgo.Channel
+	UserID         string
+	UserNum        string
+	UserName       string
+	UserData       *discordgo.User
+	Type           discordgo.InteractionType
+	Check          CommandType
+	Command        discordgo.ApplicationCommandInteractionData
+	CommandOptions map[string]OptionData
+	Component      discordgo.MessageComponentInteractionData
+	Submit         discordgo.ModalSubmitInteractionData
+	PostData       []PostData
 }
 
+// SlashCommandのOptionデータ
+type OptionData struct {
+	*discordgo.ApplicationCommandInteractionDataOption
+}
+
+// discordgoにないデータ
+func (data OptionData) AttachmentValue(i InteractionStruct) *discordgo.MessageAttachment {
+	return i.Command.Resolved.Attachments[data.Value.(string)]
+}
+
+// Submitのデータ
 type PostData struct {
 	CustomID string
 	Value    string
@@ -99,8 +111,13 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 	case discordgo.InteractionApplicationCommand:
 		iData.Check = SlashCommand
 		iData.Command = cmdData.ApplicationCommandData()
+		iData.CommandOptions = map[string]OptionData{}
+		// Optionデータ保存
+		for _, optionData := range iData.Command.Options {
+			iData.CommandOptions[optionData.Name] = OptionData{optionData}
+		}
 		//表示
-		log.Print("Guild:\"" + iData.GuildName + "\"  Channel:\"" + iData.ChannelName + "\"  [" + iData.UserName + "#" + iData.UserNum + "] Slash /" + iData.Command.Name)
+		log.Printf("Guild:\"%s\"  Channel:\"%s\"  [%s#%s] Slash /%s %v", iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Command.Name, iData.CommandOptions)
 	case discordgo.InteractionMessageComponent:
 		iData.Check = ComponentCommand
 		iData.Component = cmdData.MessageComponentData()
