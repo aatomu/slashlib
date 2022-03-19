@@ -98,10 +98,12 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 	}
 	// DMならばUser じゃ無ければMember
 	if cmdData.User != nil {
+		iData.UserID = cmdData.User.ID
 		iData.UserNum = cmdData.User.Discriminator
 		iData.UserName = cmdData.User.Username
 		iData.UserData = cmdData.User
 	} else {
+		iData.UserID = cmdData.Member.User.ID
 		iData.UserNum = cmdData.Member.User.Discriminator
 		iData.UserName = cmdData.Member.User.Username
 		iData.UserData = cmdData.Member.User
