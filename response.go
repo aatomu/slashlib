@@ -142,22 +142,31 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 	return
 }
 
-// Interaction Return Message
+// Interaction Reply Message
 // Flags Usual: Invisible
-func (i *InteractionResponse) Return(resType ReturnType, resData *discordgo.InteractionResponseData) error {
+func (i *InteractionResponse) Reply(resData *discordgo.InteractionResponseData) error {
 	i.Response = &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseType(resType),
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: resData,
+	}
+	return i.Discord.InteractionRespond(i.Interaction, i.Response)
+}
+
+// Interaction Thinking Message
+// Please after Follow()
+func (i *InteractionResponse) Thinking() error {
+	i.Response = &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
 	}
 	return i.Discord.InteractionRespond(i.Interaction, i.Response)
 }
 
 // Interaction Window Message
 // Component doesn't usual: AddButton(),AddMenu
-// Result Type is Submit, doesn't Component,SlashCommand.
+// Result Type is Submit
 func (i *InteractionResponse) Window(title, customID string, comp *Component) error {
 	i.Response = &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseType(Window),
+		Type: discordgo.InteractionResponseModal,
 		Data: &discordgo.InteractionResponseData{
 			Title:      title,
 			CustomID:   customID,
@@ -168,9 +177,16 @@ func (i *InteractionResponse) Window(title, customID string, comp *Component) er
 }
 
 // Interaction Edit Message
-// Flags Usual: Invisible
 func (i *InteractionResponse) Edit(newData *discordgo.WebhookEdit) error {
 	appID := i.Discord.State.User.ID
 	_, err := i.Discord.InteractionResponseEdit(appID, i.Interaction, newData)
+	return err
+}
+
+// Interaction FollowUP Message
+// Flags Usual: Invisible
+func (i *InteractionResponse) Follow(newData *discordgo.WebhookParams) error {
+	appID := i.Discord.State.User.ID
+	_, err := i.Discord.FollowupMessageCreate(appID, i.Interaction, false, newData)
 	return err
 }
