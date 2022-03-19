@@ -154,9 +154,12 @@ func (i *InteractionResponse) Reply(resData *discordgo.InteractionResponseData) 
 
 // Interaction Thinking Message
 // Please after Follow()
-func (i *InteractionResponse) Thinking() error {
+func (i *InteractionResponse) Thinking(invisible bool) error {
 	i.Response = &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+	}
+	if invisible {
+		i.Response.Data.Flags = Invisible
 	}
 	return i.Discord.InteractionRespond(i.Interaction, i.Response)
 }
