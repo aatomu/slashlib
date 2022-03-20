@@ -180,16 +180,14 @@ func (i *InteractionResponse) Window(title, customID string, comp *Component) er
 }
 
 // Interaction Edit Message
-func (i *InteractionResponse) Edit(newData *discordgo.WebhookEdit) error {
+func (i *InteractionResponse) Edit(newData *discordgo.WebhookEdit) (*discordgo.Message, error) {
 	appID := i.Discord.State.User.ID
-	_, err := i.Discord.InteractionResponseEdit(appID, i.Interaction, newData)
-	return err
+	return i.Discord.InteractionResponseEdit(appID, i.Interaction, newData)
 }
 
 // Interaction FollowUP Message
 // Flags Usual: Invisible
-func (i *InteractionResponse) Follow(newData *discordgo.WebhookParams) error {
+func (i *InteractionResponse) Follow(newData *discordgo.WebhookParams) (*discordgo.Message, error) {
 	appID := i.Discord.State.User.ID
-	_, err := i.Discord.FollowupMessageCreate(appID, i.Interaction, false, newData)
-	return err
+	return i.Discord.FollowupMessageCreate(appID, i.Interaction, true, newData)
 }
