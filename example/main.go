@@ -70,10 +70,10 @@ func onInteractionCreate(discord *discordgo.Session, i *discordgo.InteractionCre
 	case slashlib.SlashCommand:
 		switch iData.Command.Name {
 		case "button":
-			err := res.Return(slashlib.ReplyThiking, &discordgo.InteractionResponseData{})
+			err := res.Thinking(false)
 			ErrorCheck("Failed ", err)
 			time.Sleep(5 * time.Second)
-			err = res.Edit(&discordgo.WebhookEdit{
+			_, err = res.Follow(&discordgo.WebhookParams{
 				Content: "It is Button?",
 				Components: new(slashlib.Component).AddLine().
 					AddButton(discordgo.Button{
@@ -96,7 +96,7 @@ func onInteractionCreate(discord *discordgo.Session, i *discordgo.InteractionCre
 		case "rand":
 			rand.Seed(time.Now().UnixNano())
 			random := rand.Intn(int(iData.Command.Options[0].Value.(float64)))
-			err := res.Return(slashlib.ReplyMessage, &discordgo.InteractionResponseData{
+			err := res.Reply(&discordgo.InteractionResponseData{
 				Content: "Rand = " + fmt.Sprint(random),
 			})
 			ErrorCheck("Failed Send", err)
@@ -104,11 +104,11 @@ func onInteractionCreate(discord *discordgo.Session, i *discordgo.InteractionCre
 	case slashlib.ComponentCommand:
 		switch iData.Component.CustomID {
 		case "sw1":
-			res.Return(slashlib.ReplyMessage, &discordgo.InteractionResponseData{
+			res.Reply(&discordgo.InteractionResponseData{
 				Content: "Is that true?",
 			})
 		case "sw2":
-			res.Return(slashlib.ReplyMessage, &discordgo.InteractionResponseData{
+			res.Reply(&discordgo.InteractionResponseData{
 				Content: "```xl\n'hello? world!'```",
 			})
 		}
