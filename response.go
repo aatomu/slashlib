@@ -157,6 +157,7 @@ func (i *InteractionResponse) Reply(resData *discordgo.InteractionResponseData) 
 func (i *InteractionResponse) Thinking(invisible bool) error {
 	i.Response = &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{},
 	}
 	if invisible {
 		i.Response.Data.Flags = Invisible
