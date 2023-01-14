@@ -160,7 +160,7 @@ func (i *InteractionResponse) Thinking(invisible bool) error {
 		Data: &discordgo.InteractionResponseData{},
 	}
 	if invisible {
-		i.Response.Data.Flags = Invisible
+		i.Response.Data.Flags = discordgo.MessageFlagsEphemeral
 	}
 	return i.Discord.InteractionRespond(i.Interaction, i.Response)
 }
