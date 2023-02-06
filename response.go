@@ -1,7 +1,7 @@
 package slashlib
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -57,6 +57,7 @@ type InteractionStruct struct {
 	Component      discordgo.MessageComponentInteractionData
 	Submit         discordgo.ModalSubmitInteractionData
 	PostData       []PostData
+	FormatText     string
 }
 
 // SlashCommandのOptionデータ
@@ -86,15 +87,11 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 	iData.GuildData, err = discord.Guild(iData.GuildID)
 	if err == nil {
 		iData.GuildName = iData.GuildData.Name
-	} else {
-		iData.GuildName = "DirectMessage"
 	}
 	iData.ChannelID = cmdData.ChannelID
 	iData.ChannelData, err = discord.Channel(iData.ChannelID)
 	if err == nil {
 		iData.ChannelName = iData.ChannelData.Name
-	} else {
-		iData.ChannelName = "Unknown"
 	}
 	// DMならばUser じゃ無ければMember
 	if cmdData.User != nil {
@@ -119,12 +116,14 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 			iData.CommandOptions[optionData.Name] = OptionData{optionData}
 		}
 		//表示
-		log.Printf("Guild:\"%s\"  Channel:\"%s\"  [%s#%s] Slash /%s %v", iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Command.Name, iData.CommandOptions)
+		iData.FormatText = fmt.Sprintf("Guild:\"%s\"  Channel:\"%s\"  <%s#%s> Slash /%s %v", iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Command.Name, iData.CommandOptions)
+
 	case discordgo.InteractionMessageComponent:
 		iData.Check = ComponentCommand
 		iData.Component = cmdData.MessageComponentData()
 		//表示
-		log.Print("Guild:\"" + iData.GuildName + "\"  Channel:\"" + iData.ChannelName + "\"  [" + iData.UserName + "#" + iData.UserNum + "] Component ID:" + iData.Component.CustomID)
+		iData.FormatText = fmt.Sprint(`Guild:"%s"  Channel:"%s"  <%s#%s> Component ID:"%s"`, iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Component.CustomID)
+
 	case discordgo.InteractionModalSubmit:
 		iData.Check = SubmitCommand
 		iData.Submit = cmdData.ModalSubmitData()
@@ -137,7 +136,7 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 			})
 		}
 		//表示
-		log.Printf("Guild:\"%s\"  Channel:\"%s\"  [%s#%s] Submit_ID:%s %+v", iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Submit.CustomID, iData.PostData)
+		iData.FormatText = fmt.Sprintf(`Guild:"%s"  Channel:"%s"  <%s#%s> Submit_ID:"%s" %+v`, iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Submit.CustomID, iData.PostData)
 	}
 	return
 }
