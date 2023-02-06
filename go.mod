@@ -2,7 +2,7 @@ module github.com/atomu21263/slashlib
 
 go 1.17
 
-require github.com/bwmarrin/discordgo v0.26.1
+require github.com/bwmarrin/discordgo v0.27.0
 
 require (
 	github.com/gorilla/websocket v1.5.0 // indirect
