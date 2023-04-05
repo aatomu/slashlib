@@ -122,7 +122,7 @@ func InteractionViewAndEdit(discord *discordgo.Session, i *discordgo.Interaction
 		iData.Check = ComponentCommand
 		iData.Component = cmdData.MessageComponentData()
 		//表示
-		iData.FormatText = fmt.Sprint(`Guild:"%s"  Channel:"%s"  <%s#%s> Component ID:"%s"`, iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Component.CustomID)
+		iData.FormatText = fmt.Sprintf(`Guild:"%s"  Channel:"%s"  <%s#%s> Component ID:"%s"`, iData.GuildName, iData.ChannelName, iData.UserName, iData.UserNum, iData.Component.CustomID)
 
 	case discordgo.InteractionModalSubmit:
 		iData.Check = SubmitCommand
