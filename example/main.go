@@ -50,14 +50,23 @@ func onReady(discord *discordgo.Session, r *discordgo.Ready) {
 	//起動メッセージ
 	fmt.Println("Bot is OnReady now!")
 	cmd := slashlib.Command{}
+
+	RandMin := 1.0
 	cmd.
 		AddCommand("button", "Generate Button").
 		AddCommand("rand", "Generate Rand").
-		AddOption(slashlib.TypeInt, "n", "Random mod n", true, 1, 100).
+		AddOption(&discordgo.ApplicationCommandOption{
+			Type:        discordgo.ApplicationCommandOptionInteger,
+			Name:        "n",
+			Description: "Random % n",
+			Required:    true,
+			MinValue:    &RandMin,
+			MaxValue:    100,
+		}).
 		CommandCreate(discord, *guildID)
 }
 
-//メッセージが送られたときにCall
+// メッセージが送られたときにCall
 func onInteractionCreate(discord *discordgo.Session, i *discordgo.InteractionCreate) {
 	iData := slashlib.InteractionViewAndEdit(discord, i)
 

@@ -61,17 +61,11 @@ func (c *Command) AddCommand(cmd, description string) *Command {
 }
 
 // コマンドのオプションの追加
-// valueMin,valueMax request cmdType= int or float
-func (c *Command) AddOption(cmdType OptionType, name, description string, request bool, valueMin, valueMax float64) *Command {
-	data := &discordgo.ApplicationCommandOption{
-		Type:        discordgo.ApplicationCommandOptionType(cmdType),
-		Name:        name,
-		Description: description,
-		Required:    request,
-		MinValue:    &valueMin,
-		MaxValue:    valueMax,
-	}
-	c.Discord[c.CommandLast()].Options = append(c.Discord[c.CommandLast()].Options, data)
+// how to use Minvalue,MinLength
+// x :=1.1
+// ops.MinValue = &x
+func (c *Command) AddOption(ops *discordgo.ApplicationCommandOption) *Command {
+	c.Discord[c.CommandLast()].Options = append(c.Discord[c.CommandLast()].Options, ops)
 	c.lastCall = addOption
 	return c
 }
@@ -83,12 +77,8 @@ func (c *Command) AddChoice(name string, value interface{}) *Command {
 		panic("AddChoice() Request before AddChoice() or AddOption()")
 	}
 
-	switch {
-	case c.Discord[c.CommandLast()].Options[c.OptionsLast()].Type == 3: // string
-		fallthrough
-	case c.Discord[c.CommandLast()].Options[c.OptionsLast()].Type == 4: // int
-		fallthrough
-	case c.Discord[c.CommandLast()].Options[c.OptionsLast()].Type == 10: // float
+	switch c.Discord[c.CommandLast()].Options[c.OptionsLast()].Type {
+	case 3, 4, 10: // string,int,float
 		c.Discord[c.CommandLast()].Options[c.OptionsLast()].Choices = append(c.Discord[c.CommandLast()].Options[c.OptionsLast()].Choices, &discordgo.ApplicationCommandOptionChoice{
 			Name:  name,
 			Value: value,
@@ -136,7 +126,8 @@ func CommandDelete(discord *discordgo.Session, guildID string, name string) erro
 	}
 	return fmt.Errorf("not found \"%s\"", name)
 }
-func FindData(interaction *discordgo.InteractionCreate, key string) (value []interface{}) {
+
+func FindValue(interaction *discordgo.InteractionCreate, key string) (value []interface{}) {
 	for _, data := range interaction.ApplicationCommandData().Options {
 		if data.Name == key {
 			value = append(value, data.Value)
