@@ -53,8 +53,8 @@ func onReady(discord *discordgo.Session, r *discordgo.Ready) {
 
 	RandMin := 1.0
 	cmd.
-		AddCommand("button", "Generate Button").
-		AddCommand("rand", "Generate Rand").
+		AddCommand("button", "Generate Button", 0).
+		AddCommand("rand", "Generate Rand", 0).
 		AddOption(&discordgo.ApplicationCommandOption{
 			Type:        discordgo.ApplicationCommandOptionInteger,
 			Name:        "n",

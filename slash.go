@@ -50,11 +50,13 @@ type Command struct {
 }
 
 // コマンド生成
-func (c *Command) AddCommand(cmd, description string) *Command {
+// perm is command run user permission by https://github.com/bwmarrin/discordgo/blob/v0.27.1/structs.go#L2092-L2179
+func (c *Command) AddCommand(cmd, description string, perm int64) *Command {
 	c.Discord = append(c.Discord, &discordgo.ApplicationCommand{
-		Type:        discordgo.ChatApplicationCommand,
-		Name:        cmd,
-		Description: description,
+		Type:                     discordgo.ChatApplicationCommand,
+		Name:                     cmd,
+		DefaultMemberPermissions: &perm,
+		Description:              description,
 	})
 	c.lastCall = addCommand
 	return c
