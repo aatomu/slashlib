@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/atomu21263/slashlib"
+	"github.com/aatomu/slashlib"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -98,7 +98,7 @@ func onInteractionCreate(discord *discordgo.Session, i *discordgo.InteractionCre
 					AddButton(discordgo.Button{
 						Label: "Library Link",
 						Style: 5,
-						URL:   "http://github.com/atomu21263/slashlib",
+						URL:   "http://github.com/aatomu/slashlib",
 					}).Parse(),
 			})
 			ErrorCheck("Failed ", err)

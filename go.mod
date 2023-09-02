@@ -1,4 +1,4 @@
-module github.com/atomu21263/slashlib
+module github.com/aatomu/slashlib
 
 go 1.17
 
